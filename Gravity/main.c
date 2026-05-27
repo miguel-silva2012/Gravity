@@ -2,16 +2,15 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <SDL2/SDL.h>
-#include <math.h>
 
-#define G 6.67430e-11
+#define G 6.6743
 
 struct Rect {
     double x, y;
     double velx, vely;
     double accx, accy;
-    uint8_t mass;
-    uint8_t h, w;
+    const unsigned short mass;
+    const uint8_t h, w;
 };
 
 void DRAW_RECT(SDL_Renderer * renderer, struct Rect rrect) {
@@ -36,7 +35,7 @@ int main() {
         "Simulation fisics",
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
-        600, 400,
+        700, 500,
         SDL_WINDOW_SHOWN
     );
 
@@ -51,9 +50,9 @@ int main() {
 
     bool running = true;
 
-    struct Rect rect1 = {100, 100, 1, 0, .01, 0, 10, 25, 25};
+    struct Rect rect1 = {350, 250, 0, 0, 0, 0, 10, 25, 25};
 
-    struct Rect rect2 = {100, 300, 1, 0, .1, 0, 20, 25, 25};
+    struct Rect rect2 = {350, 100, 1, 0, 0, 0, 30, 25, 25};
 
     while (running) {
         while (SDL_PollEvent(&evento)) {
@@ -80,11 +79,12 @@ int main() {
         rect2.vely += rect2.accy;
         rect2.y += rect2.vely;
 
-        double d1 = sqrt(pow(rect2.x - rect1.x, 2) + pow(rect2.y - rect1.y, 2));
+        double d = sqrt(pow(rect2.x - rect1.x, 2) + pow(rect2.y - rect1.y, 2));
 
-        double force = (G * rect1.mass * rect2.mass) / (d1 * d1);
+        double Fx1 = (G * rect1.mass * rect2.mass) / (d * d);
 
-        printf("Force: %lf\n", force);
+        rect2.accx = (Fx1 / rect2.mass) * (rect2.x >= rect1.x ? -1 : 1);
+        rect2.accy = (Fx1 / rect2.mass) * (rect2.y >= rect1.y ? -1 : 1);
 
         SDL_RenderPresent(renderer);
 
