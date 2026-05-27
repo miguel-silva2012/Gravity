@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <SDL2/SDL.h>
+#include "drawCircle.c"
 
 #define G 6.6743
 
@@ -10,20 +11,8 @@ struct Rect {
     double velx, vely;
     double accx, accy;
     const unsigned short mass;
-    const uint8_t h, w;
+    const uint8_t r;
 };
-
-void DRAW_RECT(SDL_Renderer * renderer, struct Rect rrect) {
-   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-   SDL_Rect rect;
-
-   rect.x = (int)rrect.x;
-   rect.y = (int)rrect.y;
-   rect.w = rrect.w;
-   rect.h = rrect.h;
-
-   SDL_RenderFillRect(renderer, &rect);
-}
 
 int main() {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -50,9 +39,9 @@ int main() {
 
     bool running = true;
 
-    struct Rect rect1 = {350, 250, 0, 0, 0, 0, 10, 25, 25};
+    struct Rect rect1 = {350, 250, 0, 0, 0, 0, 10, 25};
 
-    struct Rect rect2 = {350, 100, 1, 0, 0, 0, 30, 25, 25};
+    struct Rect rect2 = {350, 100, .8, 0, 0, 0, 30, 10};
 
     while (running) {
         while (SDL_PollEvent(&evento)) {
@@ -63,9 +52,9 @@ int main() {
 
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);        
-
-        DRAW_RECT(renderer, rect1);
-        DRAW_RECT(renderer, rect2);        
+        
+        DRAW_CIRCLE(renderer, rect1.x, rect1.y, rect1.r);
+        DRAW_CIRCLE(renderer, rect2.x, rect2.y, rect2.r);
 
         rect1.velx += rect1.accx;
         rect1.x += rect1.velx;
