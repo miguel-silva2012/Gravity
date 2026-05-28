@@ -4,7 +4,7 @@
 #include <SDL2/SDL.h>
 #include "drawCircle.c"
 
-#define G 6.6743
+#define G 6.674184
 
 struct Rect {
     double x, y;
@@ -72,8 +72,8 @@ int main() {
 
         double Fx1 = (G * rect1.mass * rect2.mass) / (d * d);
 
-        rect2.accx = (Fx1 / rect2.mass) * (rect2.x >= rect1.x ? -1 : 1);
-        rect2.accy = (Fx1 / rect2.mass) * (rect2.y >= rect1.y ? -1 : 1);
+        rect2.accx = (Fx1 / rect2.mass) * (rect2.x > rect1.x ? -1 : 1);
+        rect2.accy = (Fx1 / rect2.mass) * (rect2.y > rect1.y ? -1 : 1);
 
         SDL_RenderPresent(renderer);
 
