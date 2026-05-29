@@ -1,27 +1,19 @@
-#include <stdio.h>
-#include <stdint.h>
-#include <stdbool.h>
+#include <iostream>
 #include <SDL2/SDL.h>
-#include "drawCircle.c"
+
+#include "drawCircle.hpp"
+#include "structs.hpp"
 
 #define G 6.674184
 
-struct Rect {
-    double x, y;
-    double velx, vely;
-    double accx, accy;
-    const unsigned short mass;
-    const uint8_t r;
-};
-
 int main() {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-      printf("Error on start SDL!");
-      return 1;
+        std::cerr << "Error on start SDL!" << std::endl;
+        return 1;
     }
 
     SDL_Window *window = SDL_CreateWindow(
-        "Simulation fisics",
+        "Fisics Simulation",
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
         700, 500,
@@ -33,15 +25,15 @@ int main() {
         return 1;
     }
 
-    SDL_Renderer * renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
     SDL_Event evento;
 
+    Rect rect1 = {350, 250, 0, 0, 0, 0, 10, 25};
+
+    Rect rect2 = {350, 100, .8, 0, 0, 0, 30, 10};
+
     bool running = true;
-
-    struct Rect rect1 = {350, 250, 0, 0, 0, 0, 10, 25};
-
-    struct Rect rect2 = {350, 100, .8, 0, 0, 0, 30, 10};
 
     while (running) {
         while (SDL_PollEvent(&evento)) {
@@ -53,8 +45,8 @@ int main() {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);        
         
-        DRAW_CIRCLE(renderer, rect1.x, rect1.y, rect1.r);
-        DRAW_CIRCLE(renderer, rect2.x, rect2.y, rect2.r);
+        DRAW_CIRCLE(renderer, rect1);
+        DRAW_CIRCLE(renderer, rect2);
 
         rect1.velx += rect1.accx;
         rect1.x += rect1.velx;
@@ -76,11 +68,11 @@ int main() {
         rect2.accy = (Fx1 / rect2.mass) * (rect2.y > rect1.y ? -1 : 1);
 
         SDL_RenderPresent(renderer);
-
         SDL_Delay(1000 / 60);
     }
 
     SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
     SDL_Quit();
 
     return 0;
